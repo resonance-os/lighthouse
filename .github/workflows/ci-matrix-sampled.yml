@@ -1,0 +1,142 @@
+name: CI (sampled: Ubuntu full, macOS ndjson; with Clock)
+
+on:
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Run full matrix on all OS (Ubuntu+macOS)"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 18 * * 1-5"  # 平日深夜
+
+concurrency:
+  group: ci-matrix-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  matrix-run:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        ssot: [ ndjson, kv, sqlite ]
+        agent_worker: [ false, true ]
+        include:
+          # ---- Ubuntu: 全部（ndjson/kv/sqlite × agent有無）----
+          - os: ubuntu-latest; ssot: ndjson; agent_worker: false
+          - os: ubuntu-latest; ssot: ndjson; agent_worker: true
+          - os: ubuntu-latest; ssot: kv;     agent_worker: false
+          - os: ubuntu-latest; ssot: kv;     agent_worker: true
+          - os: ubuntu-latest; ssot: sqlite; agent_worker: false
+          - os: ubuntu-latest; ssot: sqlite; agent_worker: true
+          # ---- macOS: ndjson のみ（agentなし）----
+          - os: macos-latest; ssot: ndjson; agent_worker: false
+
+    env:
+      INGRESS_PORT: 8787
+      AGENT_PORT: 8790
+      SSOT_DRIVER: ${{ matrix.ssot }}
+      RNG_SEED: 42
+      OPENAI_API_KEY: ""
+      DENO_DIR: ~/.deno
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with: { deno-version: v1.x }
+
+      # tooling
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y jq curl
+      - if: runner.os == 'macOS'
+        run: brew update && (brew install jq curl || true)
+
+      - name: Show matrix
+        run: |
+          echo "OS=${{ matrix.os }}"
+          echo "SSOT_DRIVER=${SSOT_DRIVER}"
+          echo "agent_worker=${{ matrix.agent_worker }}"
+
+      # ingress
+      - name: Start ingress
+        run: |
+          nohup deno task dev:ingress > logs/api.log 2>&1 &
+          echo $! > logs/api.pid
+          for i in `seq 1 60`; do
+            curl -sf "http://127.0.0.1:${INGRESS_PORT}/healthz" && break || sleep 0.5
+          done
+
+      # clock (seeded)
+      - name: Start clock
+        run: |
+          nohup env RNG_SEED=${RNG_SEED} deno task dev:clock > logs/hana.log 2>&1 &
+          echo $! > logs/hana.pid
+          sleep 1
+
+      # agent（Ubuntu だけ true が来る想定）
+      - name: Start agent server
+        if: matrix.agent_worker == 'true'
+        run: |
+          nohup deno task dev:agent > logs/emmy.log 2>&1 &
+          echo $! > logs/emmy.pid
+      - name: Start agent worker
+        if: matrix.agent_worker == 'true'
+        run: |
+          nohup deno task dev:agent:worker >> logs/emmy.log 2>&1 &
+          echo $! >> logs/emmy.pid
+
+      # seed
+      - name: Seed observations
+        run: |
+          curl -s -X POST "http://127.0.0.1:${INGRESS_PORT}/observation" \
+            -H 'content-type: application/json' \
+            -d '{"id":"obs-1","t":"2025-01-01T00:00:00.000Z","type":"add","payload":{"n":1}}'
+
+      # (optional) agent check
+      - name: Exercise agent via /chat
+        if: matrix.agent_worker == 'true'
+        run: |
+          CHAT_ID=$(curl -s -X POST "http://127.0.0.1:${AGENT_PORT}/chat" \
+            -H 'content-type: application/json' -d '{"prompt":"hello (ci)"}' | jq -r .id)
+          for i in `seq 1 45`; do
+            HAS=$(curl -s "http://127.0.0.1:${INGRESS_PORT}/snapshot" \
+              | jq -r '([.data.observations, .timeline] | map(select(.!=null)) | .[0] // []) 
+                       | any(.type=="LLM_CALL.response" and .payload.requestId=="'"$CHAT_ID"'")')
+            [ "$HAS" = "true" ] && break || sleep 1
+          done
+
+      # snapshot → replay → match
+      - name: Snapshot/Replay match
+        run: |
+          curl -s "http://127.0.0.1:${INGRESS_PORT}/snapshot" > /tmp/snapA.json
+          jq -S '([.data.observations, .timeline] | map(select(.!=null)) | .[0] // [])' /tmp/snapA.json > /tmp/a.json
+          jq '{timeline: .}' /tmp/a.json > /tmp/timeline.json
+          curl -s -X POST "http://127.0.0.1:${INGRESS_PORT}/replay" \
+            -H 'content-type: application/json' -d @/tmp/timeline.json > /dev/null
+          curl -s "http://127.0.0.1:${INGRESS_PORT}/snapshot" > /tmp/snapB.json
+          jq -S '([.data.observations, .timeline] | map(select(.!=null)) | .[0] // [])' /tmp/snapB.json > /tmp/b.json
+          diff -u /tmp/a.json /tmp/b.json
+          echo "✅ Match | ${{
+            matrix.os
+          }} / ${{
+            matrix.ssot
+          }} / agent=${{
+            matrix.agent_worker
+          }} / seed=${RNG_SEED}"
+
+      - name: Logs on failure
+        if: failure()
+        run: |
+          echo "::group::api.log"; (cat logs/api.log || true); echo "::endgroup::"
+          echo "::group::hana.log"; (cat logs/hana.log || true); echo "::endgroup::"
+          echo "::group::emmy.log"; (cat logs/emmy.log || true); echo "::endgroup::"
+
+      - name: Teardown
+        if: always()
+        run: |
+          if [ -f logs/emmy.pid ]; then while read p; do kill -9 "$p" || true; done < logs/emmy.pid; fi
+          if [ -f logs/hana.pid ]; then kill -9 $(cat logs/hana.pid) || true; fi
+          if [ -f logs/api.pid ]; then kill -9 $(cat logs/api.pid) || true; fi

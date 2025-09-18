@@ -1,0 +1,78 @@
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/ulid/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/ensure_dir.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/_util.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/abortable.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/deadline.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/debounce.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/deferred.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/delay.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/mux_async_iterator.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/pool.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/tee.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/retry.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/_util/os.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/win32.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/posix.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/common.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/separator.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_interface.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/glob.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_constants.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_util.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/_util/asserts.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/router.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m6[0m:[0m[33m8[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/ulid/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/ensure_dir.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/_util.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/abortable.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/deadline.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/debounce.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/deferred.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/delay.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/mux_async_iterator.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/pool.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/tee.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/async/retry.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/_util/os.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/win32.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/posix.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/common.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/separator.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_interface.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/glob.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_constants.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/path/_util.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/_util/asserts.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/router.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m6[0m:[0m[33m8[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/ulid/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/ensure_dir.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/ulid/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/ensure_dir.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/ulid/mod.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/fs/ensure_dir.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[1m[31merror[0m: Uncaught SyntaxError: The requested module '@std/http' does not provide an export named 'createRouter'
+export { createRouter, type Handler } from "@std/http";
+[0m[31m         ^[0m
+    at [0m[1m[3m<anonymous>[0m ([0m[36mfile:///home/sujii/Projects/resonance-seed/modules/hana/deps.ts[0m:[0m[33m3[0m:[0m[33m10[0m)

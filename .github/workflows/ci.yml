@@ -1,0 +1,46 @@
+name: CI (smoke: snapshot↔replay)
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: ci-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-linux:
+    runs-on: ubuntu-latest
+    env:
+      INGRESS_PORT: 8787
+      SSOT_DRIVER: ndjson
+      RNG_SEED: 42
+      OPENAI_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with: { deno-version: v1.x }
+      - run: sudo apt-get update && sudo apt-get install -y jq curl
+      - name: Start ingress
+        run: |
+          nohup deno run -A modules/ingress/server.ts > logs/api.log 2>&1 &
+          echo $! > logs/api.pid
+          for i in `seq 1 40`; do curl -sf http://127.0.0.1:${INGRESS_PORT}/healthz && break || sleep 0.5; done
+      - name: Seed observations
+        run: |
+          curl -s -X POST http://127.0.0.1:${INGRESS_PORT}/observation \
+            -H 'content-type: application/json' \
+            -d '{"id":"obs-1","t":"2025-01-01T00:00:00.000Z","type":"add","payload":{"n":1}}'
+      - name: Snapshot → Replay → Snapshot
+        run: |
+          curl -s http://127.0.0.1:${INGRESS_PORT}/snapshot > /tmp/snapA.json
+          jq -S '([.data.observations, .timeline] | map(select(.!=null)) | .[0] // [])' /tmp/snapA.json > /tmp/a.json
+          jq '{timeline: .}' /tmp/a.json > /tmp/timeline.json
+          curl -s -X POST http://127.0.0.1:${INGRESS_PORT}/replay -H 'content-type: application/json' -d @/tmp/timeline.json
+          curl -s http://127.0.0.1:${INGRESS_PORT}/snapshot > /tmp/snapB.json
+          jq -S '([.data.observations, .timeline] | map(select(.!=null)) | .[0] // [])' /tmp/snapB.json > /tmp/b.json
+          diff -u /tmp/a.json /tmp/b.json
+      - name: Stop
+        if: always()
+        run: if [ -f logs/api.pid ]; then kill -9 $(cat logs/api.pid) || true; fi

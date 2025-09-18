@@ -1,0 +1,55 @@
+{
+  "lock": { "path": "./deno.lock", "frozen": false },
+
+  "unstable": ["kv"],
+
+  "imports": {
+    "@std/http": "jsr:@std/http@^1",
+    "@std/assert": "jsr:@std/assert@^1",
+
+    "@shared/": "./modules/shared/",
+    "@core/": "./modules/core/",
+    "@ingress/": "./modules/ingress/",
+    "@clock/": "./modules/clock/",
+    "@agent/": "./modules/agent/",
+    "@ssot/": "./modules/ssot/"
+  },
+
+  "tasks": {
+    "dev:ingress": "deno run -A modules/ingress/server.ts",
+    "dev:clock": "deno run -A modules/clock/server.ts",
+    "dev:agent": "deno run -A modules/agent/server.ts",
+    "dev:agent:worker": "deno run -A modules/agent/server.ts --worker",
+    "dev:ingress:sqlite": "SSOT_DRIVER=sqlite deno run -A modules/ssot/index.ts && deno run -A modules/ingress/server.ts",
+    "dev:ingress:kv": "SSOT_DRIVER=kv deno run -A modules/ingress/server.ts",
+
+    "res": "deno run -A bin/cli.ts",
+    "build:cli": "deno compile -A -o dist/res bin/cli.ts",
+
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "check": "deno check bin/cli.ts modules/ingress/router.ts modules/agent/router.ts modules/core/reduce.ts",
+
+    "test": "deno test -A",
+
+    "dev:all": "deno task dev:ingress & deno task dev:clock & deno task dev:agent"
+  },
+
+  "permissions": {
+    "dev-servers": {
+      "read": ["./", "./modules/ssot/.data", "./logs"],
+      "write": ["./modules/ssot/.data", "./logs"],
+      "net": true,
+      "env": true
+    }
+  },
+
+  "fmt": {
+    "lineWidth": 100,
+    "semiColons": true,
+    "singleQuote": false
+  },
+  "lint": {
+    "rules": { "tags": ["recommended"] }
+  }
+}

@@ -1,0 +1,25 @@
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/emmy/server.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/emmy/server.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/server.ts
+[0m[32mDownload[0m jsr:/@std/http@0.224.5/http/router.ts
+[0m[1m[31merror[0m: Module not found "jsr:/@std/http@0.224.5/http/server.ts".
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/emmy/server.ts[0m:[0m[33m2[0m:[0m[33m23[0m
+[0m[1m[31merror[0m: Unknown export './http/server.ts' for '@std/http@0.224.5'.
+  Package exports:
+ * .
+ * ./cookie
+ * ./etag
+ * ./file-server
+ * ./negotiation
+ * ./server
+ * ./server-sent-event-stream
+ * ./status
+ * ./unstable-signed-cookie
+ * ./user-agent
+    at [0m[36mfile:///home/sujii/Projects/resonance-seed/modules/emmy/server.ts[0m:[0m[33m2[0m:[0m[33m23[0m

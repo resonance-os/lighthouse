@@ -1,0 +1,5 @@
+.git
+project_code*
+scripts
+*.code-workspace
+.env
