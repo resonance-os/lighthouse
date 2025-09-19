@@ -1,0 +1,29 @@
+name: design-doc-gate
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = (pr.body || "").replace(/\s+/g, " ");
+            // 必須: 「Design-doc 承認済み（リンク付き）」と Lighthouse レポへの言及
+            const hasDesign = /Design-?doc\s*承認済み/i.test(body) && /https?:\/\/\S+/.test(body);
+            const hasReport = /Lighthouse\s*report/i.test(body) || /reports\//i.test(body);
+            if (!hasDesign || !hasReport) {
+              const msg = [
+                "❌ **Design-docゲート未達**",
+                hasDesign ? "✅ Design-doc 承認リンクあり" : "❌ Design-doc 承認リンクがありません",
+                hasReport ? "✅ Lighthouse レポ言及あり"    : "❌ Lighthouse レポへの言及がありません",
+                "",
+                "PRテンプレのチェックを満たしてから再実行してください。"
+              ].join("\n");
+              core.setFailed(msg);
+            }
