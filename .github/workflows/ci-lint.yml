@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
-        with: { deno-version: v1.x }
+        with: { deno-version: v2.x }
       - run: deno fmt --check
       - run: deno lint
       - run: deno check bin/cli.ts
