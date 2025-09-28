@@ -1,3 +1,4 @@
+# WIP: This architecture is provisional.
 # Resonance OS / Lighthouse
 
 > **最小縦スライス**で「観測 → SSOT → 純計算 → 行為（通知）」を実現し、  
